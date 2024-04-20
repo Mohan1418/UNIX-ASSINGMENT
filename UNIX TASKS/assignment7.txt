@@ -1,0 +1,311 @@
+Assign.txt:
+This is line 1.
+This is line 2.
+This is line 3.
+
+
+
+WRITE.sh:
+
+# Check if username is provided as argument
+if [ -z "$1" ]; then
+    echo "Usage: $0 <username>"
+    exit 1
+fi
+
+# Run the write command to send a message to the specified user
+write "$1" || echo "User has messages disabled. Consider using an alternative communication method."
+
+ 
+
+
+Nice.sh:
+if [ -z "$1" ]; then
+    echo "Usage: $0 <command>"
+    exit 1
+fi
+
+nice -n 10 "$@"
+
+
+ 
+
+Passwd.sh:
+if [ -z "$1" ]; then
+    echo "Usage: $0 <username>"
+    exit 1
+fi
+
+passwd "$1"
+
+
+
+ 
+Talk.sh:
+if [ -z "$1" ]; then
+    echo "Usage: $0 <username>"
+    exit 1
+fi
+
+
+talk "$1"
+
+
+ 
+
+Wc.sh:
+if [ -z "$1" ]; then
+    echo "Usage: $0 <filename>"
+    exit 1
+fi
+
+# Print line, word, and character count of the specified file
+wc "$1"
+
+
+ 
+
+
+Pr.sh:
+if [ -z "$1" ]; then
+    echo "Usage: $0 <filename>"
+    exit 1
+fi
+
+pr "$1"
+
+
+ 
+
+
+rlogin.sh:
+if [ -z "$1" ]; then
+    echo "Usage: $0 <hostname>"
+    exit 1
+fi
+
+
+rlogin "$1"
+
+
+ 
+
+
+Telnet.sh:
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: $0 <hostname> <port>"
+    exit 1
+fi
+
+
+telnet "$1" "$2"
+
+
+ 
+
+
+Rsh.sh:
+
+#!/bin/bash
+
+# Create a directory
+mkdir example_directory
+
+# Create files
+touch example_directory/file1.txt
+touch example_directory/file2.txt
+
+# Display directory contents
+echo "Directory contents:"
+ls -l example_directory
+
+# Copy file1.txt to a new location
+cp example_directory/file1.txt example_directory/copied_file.txt
+
+# Display updated directory contents
+echo "Updated directory contents:"
+ls -l example_directory
+
+# Move file2.txt to a new location
+mv example_directory/file2.txt example_directory/moved_file.txt
+
+# Display updated directory contents
+echo "Updated directory contents after moving file2.txt:"
+ls -l example_directory
+
+# Attempt to execute a command remotely using rsh
+echo "Executing 'ls' command remotely..."
+rsh localhost ls
+
+# Remove the created files and directory
+rm example_directory/copied_file.txt
+rm example_directory/moved_file.txt
+rmdir example_directory
+
+# Display confirmation message
+echo "Files and directory removed."
+
+
+
+ 
+
+Rcp.sh:
+#!/bin/bash
+
+# Create a directory
+mkdir example_directory
+
+# Create files
+touch example_directory/file1.txt
+touch example_directory/file2.txt
+
+# Display directory contents
+echo "Directory contents:"
+ls -l example_directory
+
+# Copy file1.txt to a new location
+cp example_directory/file1.txt example_directory/copied_file.txt
+
+# Display updated directory contents
+echo "Updated directory contents:"
+ls -l example_directory
+
+# Move file2.txt to a new location
+mv example_directory/file2.txt example_directory/moved_file.txt
+
+# Display updated directory contents
+echo "Updated directory contents after moving file2.txt:"
+ls -l example_directory
+
+# Use rcp to copy file1.txt to a remote host
+echo "Copying file1.txt to a remote host..."
+rcp example_directory/file1.txt remote.example.com:/tmp/file1.txt
+
+# Remove the created files and directory
+rm example_directory/copied_file.txt
+rm example_directory/moved_file.txt
+rmdir example_directory
+
+# Display confirmation message
+echo "Files and directory removed."
+
+
+
+ 
+
+Nl.sh:
+
+echo "This is line 1." > assign7.txt
+echo "This is line 2." >> assign7.txt
+echo "This is line 3." >> assign7.txt
+
+
+nl assign7.txt
+
+
+
+ 
+
+Who.sh:
+
+# Print information about currently logged in users
+who
+
+
+
+ 
+
+Uname.sh:
+
+# Print system information
+echo "Operating system name:"
+uname -s
+
+echo "Kernel name:"
+uname -n
+
+echo "Kernel release:"
+uname -r
+
+echo "Kernel version:"
+uname -v
+
+echo "Machine hardware name:"
+uname -m
+
+echo "Processor architecture:"
+uname -p
+
+echo "Operating system version:"
+uname -o
+
+
+ 
+
+
+Tty.sh:
+# Print the file name of the terminal connected to standard input
+tty
+
+
+
+ 
+
+Tput.sh:
+
+# Clear the screen
+tput clear
+
+# Get the size of the terminal
+rows=$(tput lines)
+cols=$(tput cols)
+
+echo "Terminal size: $rows rows x $cols columns"
+
+# Set text color to red
+tput setaf 1
+echo "This text is in red color"
+
+# Set text style to bold
+tput bold
+echo "This text is bold"
+
+# Reset text attributes
+tput sgr0
+
+tput cup 10 20
+echo "This text is at row 10, column 20"
+
+More.sh:
+
+echo "This is line 1." > assign7.txt
+echo "This is line 2." >> assign7.txt 
+echo "This is line 3." >> assign7.txt
+more assign7.txt
+
+q2
+Write a shell script that list the memory usage and cpu usage of multiple machines.
+
+#!/bin/bash
+
+# Define the list of machines' IP addresses
+machines=("172.50.11.125" "172.50.11.151")
+
+# Function to get memory usage
+get_memory_usage() {
+    ssh "$1" free -m | awk 'NR==2 {printf "Memory Usage: %s/%sMB (%.2f%%)\n", $3, $2, $3*100/$2}'
+}
+
+# Function to get CPU usage
+get_cpu_usage() {
+    ssh "$1" top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print "CPU Usage: " 100 - $1"%"}'
+}
+
+# Loop through each machine
+for machine in "${machines[@]}"; do
+    echo "Machine: $machine"
+    get_memory_usage "$machine"
+    get_cpu_usage "$machine"
+    echo ""
+done
